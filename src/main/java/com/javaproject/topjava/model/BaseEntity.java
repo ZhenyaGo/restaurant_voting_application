@@ -1,6 +1,7 @@
 package com.javaproject.topjava.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.javaproject.topjava.HasId;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public abstract class BaseEntity implements Persistable<Integer> {
+public abstract class BaseEntity implements Persistable<Integer> , HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

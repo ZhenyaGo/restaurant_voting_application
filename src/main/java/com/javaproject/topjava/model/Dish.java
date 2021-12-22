@@ -24,7 +24,7 @@ public class Dish extends NamedEntity {
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
-    private LocalDate registered;
+    private LocalDate registered = LocalDate.now();
 
     public Dish() {
 
