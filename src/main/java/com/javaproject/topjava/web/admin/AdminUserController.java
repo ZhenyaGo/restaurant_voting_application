@@ -2,6 +2,7 @@ package com.javaproject.topjava.web.admin;
 
 import com.javaproject.topjava.to.UserTo;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +18,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminUserController {
+public class AdminUserController extends AbstractUserController {
 
     static final String REST_URL = "/api/admin/users";
 
 
-    private final UserRepository repository;
-
-    public AdminUserController(UserRepository repository) {
-        this.repository = repository;
-    }
-
 
     @GetMapping(value = "/{id}")
-    public User get(@PathVariable int id) {
-        return repository.findById(id).orElse(null);
+    public ResponseEntity<User> get(@PathVariable int id) {
+        return super.get(id);
     }
 
     @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        repository.deleteExisted(id);
+        super.delete(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -50,6 +46,7 @@ public class AdminUserController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody User user, @PathVariable int id) {
         assureIdConsistent(user, id);
         checkNotFoundWithId(repository.save(user), user.id());
