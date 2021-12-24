@@ -2,6 +2,7 @@ package com.javaproject.topjava.web.admin;
 
 import com.javaproject.topjava.mapper.RestaurantMapper;
 import com.javaproject.topjava.to.RestaurantTo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import static com.javaproject.topjava.util.validation.ValidationUtil.checkNotFou
 
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class AdminRestaurantController {
 
     static final String REST_URL = "/api/admin/restaurants";
@@ -34,6 +36,7 @@ public class AdminRestaurantController {
 
     @PostMapping
     public ResponseEntity<RestaurantTo> createWithLocation(@RequestBody RestaurantTo restaurant) {
+        log.info("create {}", restaurant);
         checkNew(restaurant);
         Restaurant newRestaurant = repository.save(mapper.toEntity(restaurant));
         RestaurantTo newRestaurantTo = mapper.toDto(newRestaurant);
@@ -47,6 +50,7 @@ public class AdminRestaurantController {
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@RequestBody RestaurantTo restaurant, @PathVariable int id) {
+        log.info("update {} with id={}", restaurant, id);
         //проверяем существует ли ресторан, который мы хотим обновить
         checkNotFoundWithId(repository.findById(id).orElse(null), id);
         assureIdConsistent(restaurant, id);
@@ -55,6 +59,7 @@ public class AdminRestaurantController {
 
     @GetMapping
     public List<RestaurantTo> getAll() {
+        log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -63,17 +68,20 @@ public class AdminRestaurantController {
 
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable int id) {
+        log.info("delete {}", id);
         repository.deleteExisted(id);
     }
 
     @GetMapping(value = "/{id}")
     public RestaurantTo get(@PathVariable int id) {
+        log.info("get {}", id);
         Restaurant restaurant = checkNotFoundWithId(repository.findById(id).orElse(null), id);
         return mapper.toDto(restaurant);
     }
 
     @GetMapping(value = "/by-name")
     public RestaurantTo getByName(@RequestParam String name) {
+        log.info("getByName {}", name);
         Restaurant restaurant = checkNotFound(repository.getByName(name).orElse(null), "name=" + name);
         return mapper.toDto(restaurant);
     }

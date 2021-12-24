@@ -1,6 +1,6 @@
 package com.javaproject.topjava.web.admin;
 
-import com.javaproject.topjava.to.UserTo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.javaproject.topjava.model.User;
-import com.javaproject.topjava.repository.UserRepository;
+
 
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 
@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class AdminUserController extends AbstractUserController {
 
     static final String REST_URL = "/api/admin/users";
@@ -37,6 +38,7 @@ public class AdminUserController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+        log.info("create {}", user);
         checkNew(user);
         User created = repository.save(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -48,6 +50,7 @@ public class AdminUserController extends AbstractUserController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody User user, @PathVariable int id) {
+        log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
         checkNotFoundWithId(repository.save(user), user.id());
     }
@@ -55,6 +58,7 @@ public class AdminUserController extends AbstractUserController {
 
     @GetMapping("/by-email")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
+        log.info("getByEmail {}", email);
         return ResponseEntity.of(
                 checkNotFound(repository.getByEmail(email), "email=" + email));
     }
@@ -62,6 +66,7 @@ public class AdminUserController extends AbstractUserController {
 
     @GetMapping
     public List<User> getAll() {
+        log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));
     }
 

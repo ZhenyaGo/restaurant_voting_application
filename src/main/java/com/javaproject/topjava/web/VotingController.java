@@ -1,7 +1,7 @@
 package com.javaproject.topjava.web;
 
 import com.javaproject.topjava.to.VotingTo;
-import org.modelmapper.ModelMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import com.javaproject.topjava.model.Restaurant;
@@ -23,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = VotingController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class VotingController {
 
     static final LocalTime LOCAL_TIME = LocalTime.of(11,0, 0);
@@ -33,7 +34,7 @@ public class VotingController {
 
     static final String REST_URL = "/api/voting";
 
-    public VotingController(RestaurantRepository restRepository, UserRepository userRepository, VotingRepository votingRepository, ModelMapper mapper) {
+    public VotingController(RestaurantRepository restRepository, UserRepository userRepository, VotingRepository votingRepository) {
         this.restRepository = restRepository;
         this.userRepository = userRepository;
         this.votingRepository = votingRepository;
@@ -42,6 +43,7 @@ public class VotingController {
 
     @PostMapping(value = "/{id}/restaurant/{restaurant_id}")
     public void voteFor(@PathVariable int id, @PathVariable int restaurant_id) {
+        log.info("Vote for restaurant with id={}", id);
         User user = checkNotFoundWithId(userRepository.getById(id), id);
         Restaurant restaurant = checkNotFoundWithId(restRepository.getById(restaurant_id),restaurant_id);
 
@@ -66,7 +68,8 @@ public class VotingController {
 
     //Просмотр своих голосов
     @GetMapping(value = "/{id}")
-    public List<VotingTo> getVotingLog(@PathVariable int id) {
+    public List<VotingTo> getAllVotes(@PathVariable int id) {
+        log.info("get all user's votes, user id={}", id);
         List<Voting> voting = votingRepository.getAllByUserId(id);
         return createVotingTos(voting);
     }

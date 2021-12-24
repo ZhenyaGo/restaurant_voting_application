@@ -22,3 +22,9 @@ spring:
     password:
   h2.console.enabled: true
 
+logging:
+    level:
+      root: WARN
+      com.javaproject.topjava: DEBUG
+      org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
+

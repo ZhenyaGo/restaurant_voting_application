@@ -4,6 +4,7 @@ import com.javaproject.topjava.mapper.DishMapper;
 import com.javaproject.topjava.to.DishTo;
 import com.javaproject.topjava.util.exception.NotAllowedException;
 import com.javaproject.topjava.util.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 
 @RestController
 @RequestMapping(value = AdminDishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class AdminDishController {
 
     static final String REST_URL = "api/admin/dishes";
@@ -42,11 +44,13 @@ public class AdminDishController {
 
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable int id) {
+        log.info("delete {}", id);
         dishRepository.deleteExisted(id);
     }
 
     @PostMapping(value = "restaurant/{id}")
     public List<DishTo> create(@PathVariable int id, @RequestBody List<DishTo> menuTo) {
+        log.info("create a menu {} for a restaurant with id={}", menuTo, id);
         Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
         List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), Sort.by("id"));
         if (actualMenu.isEmpty()) {
@@ -63,6 +67,7 @@ public class AdminDishController {
     //может сделать проще??
     @PutMapping(value = "/{id}/restaurant/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable int id, @RequestBody DishTo dishTo, @PathVariable int restaurant_id) {
+        log.info("update a dish {} with id={} for a restaurant with id={}", dishTo, id, restaurant_id);
         //проверяем есть ли ресторан, еду которого мы хотим обновить
         Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(restaurant_id).orElse(null), restaurant_id);
         //проверяем существует ли еда, которую мы хотим обновить
@@ -76,22 +81,32 @@ public class AdminDishController {
     }
 
 
-    //получение списка еды конкретного ресторана за все время
     //получение списка еды конкретного ресторана за определенную дату(сортировка по id)
+    //(если localDate=null отображается еда за сегодня)
     @GetMapping(value = "/restaurant/{id}")
     public List<DishTo> getAll(@PathVariable int id,
                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate localDate) {
+        log.info("get the restaurant menu with id={}", id);
         return localDate == null
-                ? dishRepository.getAllRestaurantDishes(id).stream()
+                ? dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), SORT_ID).stream()
                 .map(mapper::toDto).collect(Collectors.toList())
                 : dishRepository.getAllRestaurantDishesByDate(id, localDate, SORT_ID).stream()
                 .map(mapper::toDto).collect(Collectors.toList());
 
     }
 
+    //получение списка еды конкретного ресторана за все время
+    @GetMapping(value = "/all/restaurant/{id}")
+    public List<DishTo> getAllRestaurantDishes(@PathVariable int id) {
+        log.info("get all restaurant's dishes with id={}", id);
+        return dishRepository.getAllRestaurantDishes(id).stream()
+                .map(mapper::toDto).collect(Collectors.toList());
+    }
+
     //получение списка еды всех ресторанов за сегодня.
     @GetMapping()
     public List<DishTo> getAllDishesForToday() {
+        log.info("get all dishes of all restaurants for today");
         List<Dish> todayMenu = dishRepository.getAllByRegistered(LocalDate.now());
         if(todayMenu.isEmpty()) throw new NotFoundException("The actual menu hasn't been created yet! Try again a bit later!");
         return  todayMenu.stream()
@@ -101,6 +116,7 @@ public class AdminDishController {
     //получение еды по id
     @GetMapping(value = "/{id}")
     public DishTo get(@PathVariable int id) {
+        log.info("get {}", id);
         return checkNotFoundWithId(mapper.toDto(dishRepository.getById(id)), id);
 
     }
