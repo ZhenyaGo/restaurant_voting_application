@@ -9,11 +9,12 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
 @Table(name = "users")
-public class User extends NamedEntity {
+public class User extends NamedEntity implements Serializable {
 
     @Column(name = "email", nullable = false, unique = true)
     @NotBlank
