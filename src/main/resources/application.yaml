@@ -22,6 +22,14 @@ spring:
     password:
   h2.console.enabled: true
 
+    # Jackson Serialization Issue Resolver
+  jackson:
+      visibility:
+        field: any
+        getter: none
+        setter: none
+        is-getter: none
+
 logging:
     level:
       root: WARN

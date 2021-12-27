@@ -1,5 +1,7 @@
 package com.javaproject.topjava.config;
 
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.Server;
 import org.modelmapper.ModelMapper;
@@ -26,4 +28,10 @@ public class AppConfig {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
+    @Bean
+    Module module() {
+        return new Hibernate5Module();
+    }
+
 }

@@ -12,11 +12,11 @@ public class VotingUtil {
 
     public static List<VotingTo> createVotingTos(List<Voting> voting) {
          return voting.stream()
-                 .map(VotingUtil::createVotingTos).collect(Collectors.toList());
+                 .map(VotingUtil::createVotingTo).collect(Collectors.toList());
     }
 
 
-    public static VotingTo createVotingTos(Voting voting) {
+    public static VotingTo createVotingTo(Voting voting) {
         return new VotingTo(voting.id(), voting.getUser().getId(), voting.getRestaurant().getId(), voting.getVotingDate());
     }
 }

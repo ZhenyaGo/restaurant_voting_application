@@ -19,7 +19,7 @@ public class Dish extends NamedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-//    @JsonBackReference
+    @JsonBackReference
     private Restaurant restaurant;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)

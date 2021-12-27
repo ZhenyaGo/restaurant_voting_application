@@ -21,8 +21,7 @@ public class Restaurant extends NamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonManagedReference
-    @JsonIgnore
+    @JsonManagedReference
     private List<Dish> menu;
 
     public Restaurant() {
