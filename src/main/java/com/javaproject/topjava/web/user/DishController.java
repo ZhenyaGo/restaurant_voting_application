@@ -32,7 +32,7 @@ public class DishController {
         this.mapper = mapper;
     }
 
-    static final String REST_URL = "api/profile/dishes";
+    static final String REST_URL = "api/dishes";
 
     //получение списка еды конкретного ресторана за определенную дату(сортировка по id)
     //(если localDate=null отображается еда за сегодня)

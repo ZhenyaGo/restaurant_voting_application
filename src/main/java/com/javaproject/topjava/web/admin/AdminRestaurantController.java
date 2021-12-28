@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
-import static com.javaproject.topjava.util.validation.ValidationUtil.checkNotFoundWithId;
+
 
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)

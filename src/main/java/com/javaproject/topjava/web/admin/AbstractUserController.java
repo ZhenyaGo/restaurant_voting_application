@@ -13,13 +13,6 @@ public class AbstractUserController {
     @Autowired
     protected UserRepository repository;
 
-//    @Autowired
-//    private UniqueMailValidator emailValidator;
-//
-//    @InitBinder
-//    protected void initBinder(WebDataBinder binder) {
-//        binder.addValidators(emailValidator);
-//    }
 
     public ResponseEntity<User> get(int id) {
         log.info("get {}", id);
@@ -32,7 +25,7 @@ public class AbstractUserController {
         repository.deleteExisted(id);
     }
 
-//    protected User prepareAndSave(User user) {
-//        return repository.save(UserUtil.prepareToSave(user));
-//    }
+    protected User prepareAndSave(User user) {
+        return repository.save(UserUtil.prepareToSave(user));
+    }
 }
