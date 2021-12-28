@@ -1,10 +1,12 @@
 package com.javaproject.topjava.web.admin;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.javaproject.topjava.model.User;
@@ -69,6 +71,15 @@ public class AdminUserController extends AbstractUserController {
     public List<User> getAll() {
         log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name", "email"));
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        User user = repository.getById(id);
+        user.setEnabled(enabled);
     }
 
 }
