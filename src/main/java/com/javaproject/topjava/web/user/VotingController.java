@@ -66,7 +66,6 @@ public class VotingController {
     }
 
 
-
     @GetMapping
     public List<VotingTo> getAllVotes() {
         log.info("get all user's votes, user id={}", authId());

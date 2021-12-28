@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.repository.RestaurantRepository;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 
@@ -34,7 +35,7 @@ public class AdminRestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<RestaurantTo> createWithLocation(@RequestBody RestaurantTo restaurant) {
+    public ResponseEntity<RestaurantTo> createWithLocation(@Valid @RequestBody RestaurantTo restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
         Restaurant newRestaurant = repository.save(mapper.toEntity(restaurant));
@@ -49,7 +50,7 @@ public class AdminRestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody RestaurantTo restaurant, @PathVariable int id) {
+    public void update(@Valid @RequestBody RestaurantTo restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         //проверяем существует ли ресторан, который мы хотим обновить
         checkNotFoundWithId(repository.findById(id).orElse(null), id);

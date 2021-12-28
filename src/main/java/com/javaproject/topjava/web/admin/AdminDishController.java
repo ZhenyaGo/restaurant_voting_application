@@ -16,6 +16,7 @@ import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.util.validation.ValidationUtil;
 
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -63,15 +64,12 @@ public class AdminDishController {
     }
 
 
-    //может сделать проще??
+
     @PutMapping(value = "/{id}/restaurant/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@PathVariable int id, @RequestBody DishTo dishTo, @PathVariable int restaurant_id) {
+    public void update(@PathVariable int id, @Valid @RequestBody DishTo dishTo, @PathVariable int restaurant_id) {
         log.info("update a dish {} with id={} for a restaurant with id={}", dishTo, id, restaurant_id);
-        //проверяем есть ли ресторан, еду которого мы хотим обновить
         Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(restaurant_id).orElse(null), restaurant_id);
-        //проверяем существует ли еда, которую мы хотим обновить
         Dish dish = checkNotFoundWithId(dishRepository.getById(id), id);
-        //принадлежит ли еда данному ресторану
         if(Objects.equals(dish.getRestaurant().getId(), restaurant != null ? restaurant.getId() : null)) {
             assureIdConsistent(dishTo, id);
             dishTo.setRestaurant(restaurant);

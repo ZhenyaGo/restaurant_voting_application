@@ -44,9 +44,6 @@ public class User extends NamedEntity implements Serializable {
     private Set<Role> roles;
 
 
-//    @OneToMany(mappedBy = "user")
-//    private Set<Voting> votes = new HashSet<>();
-
 
     public User(User u) {
         this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);

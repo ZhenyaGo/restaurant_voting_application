@@ -48,16 +48,5 @@ public class Restaurant extends NamedEntity {
     public void setMenu(List<Dish> menu) {
         this.menu = menu;
     }
-//
-//    public Set<Voting> getVoteSet() {
-//        return voteSet;
-//    }
-//
-//    public void setVoteSet(Set<Voting> voteSet) {
-//        this.voteSet = voteSet;
-//    }
-//
-//    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
-//    private Set<Voting> voteSet = new HashSet<>();
 
 }
