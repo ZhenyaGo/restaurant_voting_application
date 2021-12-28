@@ -30,7 +30,6 @@ public class AdminDishController {
 
     static final String REST_URL = "api/admin/dishes";
 
-    private static final Sort SORT_ID = Sort.by(Sort.Direction.ASC, "id");
 
     private final DishRepository dishRepository;
     private final RestaurantRepository restaurantRepository;
@@ -78,46 +77,5 @@ public class AdminDishController {
             dishTo.setRestaurant(restaurant);
             dishRepository.save(mapper.toEntity(dishTo));
         } else throw new NotAllowedException("The dish doesn't belong to this restaurant!");
-    }
-
-
-    //получение списка еды конкретного ресторана за определенную дату(сортировка по id)
-    //(если localDate=null отображается еда за сегодня)
-    @GetMapping(value = "/restaurant/{id}")
-    public List<DishTo> getAll(@PathVariable int id,
-                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate localDate) {
-        log.info("get the restaurant menu with id={}", id);
-        return localDate == null
-                ? dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), SORT_ID).stream()
-                .map(mapper::toDto).collect(Collectors.toList())
-                : dishRepository.getAllRestaurantDishesByDate(id, localDate, SORT_ID).stream()
-                .map(mapper::toDto).collect(Collectors.toList());
-
-    }
-
-    //получение списка еды конкретного ресторана за все время
-    @GetMapping(value = "/all/restaurant/{id}")
-    public List<DishTo> getAllRestaurantDishes(@PathVariable int id) {
-        log.info("get all restaurant's dishes with id={}", id);
-        return dishRepository.getAllRestaurantDishes(id).stream()
-                .map(mapper::toDto).collect(Collectors.toList());
-    }
-
-    //получение списка еды всех ресторанов за сегодня.
-    @GetMapping()
-    public List<DishTo> getAllDishesForToday() {
-        log.info("get all dishes of all restaurants for today");
-        List<Dish> todayMenu = dishRepository.getAllByRegistered(LocalDate.now());
-        if(todayMenu.isEmpty()) throw new NotFoundException("The actual menu hasn't been created yet! Try again a bit later!");
-        return  todayMenu.stream()
-                .map(mapper::toDto).collect(Collectors.toList());
-    }
-
-    //получение еды по id
-    @GetMapping(value = "/{id}")
-    public DishTo get(@PathVariable int id) {
-        log.info("get {}", id);
-        return checkNotFoundWithId(mapper.toDto(dishRepository.getById(id)), id);
-
     }
 }
