@@ -24,12 +24,13 @@ public class AdminUserController extends AbstractUserController {
     static final String REST_URL = "/api/admin/users";
 
 
-
+    @Override
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> get(@PathVariable int id) {
         return super.get(id);
     }
 
+    @Override
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {

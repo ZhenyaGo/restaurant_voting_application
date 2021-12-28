@@ -18,7 +18,7 @@ import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 
 @RestController
 @Slf4j
-@RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileController extends AbstractUserController {
 
     static final String REST_URL = "/api/profile";

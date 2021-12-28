@@ -1,4 +1,4 @@
-package com.javaproject.topjava.web;
+package com.javaproject.topjava.web.user;
 
 import com.javaproject.topjava.to.VotingTo;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 import static com.javaproject.topjava.util.Util.*;
 import static com.javaproject.topjava.util.VotingUtil.*;
+import static com.javaproject.topjava.web.SecurityUtil.authId;
+
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,7 +28,6 @@ import java.util.List;
 @Slf4j
 public class VotingController {
 
-    static final LocalTime LOCAL_TIME = LocalTime.of(11,0, 0);
 
     private final RestaurantRepository restRepository;
     private final UserRepository userRepository;
@@ -41,23 +42,22 @@ public class VotingController {
     }
 
 
-    @PostMapping(value = "/{id}/restaurant/{restaurant_id}")
-    public void voteFor(@PathVariable int id, @PathVariable int restaurant_id) {
+    @PostMapping(value = "/restaurants/{id}")
+    public void voteFor(@PathVariable int id) {
         log.info("Vote for restaurant with id={}", id);
-        User user = checkNotFoundWithId(userRepository.getById(id), id);
-        Restaurant restaurant = checkNotFoundWithId(restRepository.getById(restaurant_id),restaurant_id);
+        User user = userRepository.getById(authId());
+        Restaurant restaurant = checkNotFoundWithId(restRepository.getById(id),id);
 
         LocalDate votingDate = LocalDate.now();
         LocalTime votingTime = LocalTime.now();
-        //Сначала проверяем проголосовал ли данный пользователь сегодня(находим по id и дате)
+
         Voting registeredVoting = votingRepository.getByUserIdAndVotingDate(id, votingDate);
-        //если нет, тогда регистрируем голос от пользователя
+
         if(registeredVoting == null) {
             Voting voting = new Voting(user, restaurant, votingDate, votingTime);
             votingRepository.save(voting);
-        } else {  //если да, смотрим в какое время был сделан голос, есть ли возможность его изменить
-            if(isBefore(registeredVoting.getVotingTime(), LOCAL_TIME)) {
-//                votingRepository.deleteExisted(registeredVoting.id());
+        } else {
+            if(isBefore(registeredVoting.getVotingTime(), LIMIT_TIME)) {
                 Voting newVote = new Voting(user, restaurant, votingDate, votingTime);
                 newVote.setId(registeredVoting.id());
                 votingRepository.save(newVote);
@@ -66,11 +66,11 @@ public class VotingController {
     }
 
 
-    //Просмотр своих голосов
-    @GetMapping(value = "/{id}")
-    public List<VotingTo> getAllVotes(@PathVariable int id) {
-        log.info("get all user's votes, user id={}", id);
-        List<Voting> voting = votingRepository.getAllByUserId(id);
+
+    @GetMapping
+    public List<VotingTo> getAllVotes() {
+        log.info("get all user's votes, user id={}", authId());
+        List<Voting> voting = votingRepository.getAllByUserId(authId());
         return createVotingTos(voting);
     }
 
