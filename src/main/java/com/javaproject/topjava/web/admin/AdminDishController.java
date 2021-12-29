@@ -5,6 +5,8 @@ import com.javaproject.topjava.to.DishTo;
 import com.javaproject.topjava.util.exception.NotAllowedException;
 import com.javaproject.topjava.util.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -27,6 +29,7 @@ import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 @RestController
 @RequestMapping(value = AdminDishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@CacheConfig(cacheNames = "dishes")
 public class AdminDishController {
 
     static final String REST_URL = "api/admin/dishes";
@@ -43,13 +46,15 @@ public class AdminDishController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @CacheEvict(allEntries = true)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
         dishRepository.deleteExisted(id);
     }
 
     @PostMapping(value = "restaurant/{id}")
-    public List<DishTo> create(@PathVariable int id, @RequestBody List<DishTo> menuTo) {
+    @CacheEvict(allEntries = true)
+    public List<DishTo> create(@PathVariable int id, @Valid @RequestBody List<DishTo> menuTo) {
         log.info("create a menu {} for a restaurant with id={}", menuTo, id);
         Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
         List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), Sort.by("id"));
@@ -66,6 +71,7 @@ public class AdminDishController {
 
 
     @PutMapping(value = "/{id}/restaurant/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(allEntries = true)
     public void update(@PathVariable int id, @Valid @RequestBody DishTo dishTo, @PathVariable int restaurant_id) {
         log.info("update a dish {} with id={} for a restaurant with id={}", dishTo, id, restaurant_id);
         Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(restaurant_id).orElse(null), restaurant_id);

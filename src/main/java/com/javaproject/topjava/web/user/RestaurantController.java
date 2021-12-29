@@ -5,6 +5,8 @@ import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.to.RestaurantTo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 @RestController
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@CacheConfig(cacheNames = "restaurants")
 public class RestaurantController {
 
     static final String REST_URL = "/api/restaurants";
@@ -32,6 +35,7 @@ public class RestaurantController {
 
 
     @GetMapping
+    @Cacheable
     public List<RestaurantTo> getAll() {
         log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
