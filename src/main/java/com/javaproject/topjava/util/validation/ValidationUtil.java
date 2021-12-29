@@ -1,13 +1,16 @@
 package com.javaproject.topjava.util.validation;
 
 import com.javaproject.topjava.HasId;
+import com.javaproject.topjava.error.IllegalRequestDataException;
 import com.javaproject.topjava.model.BaseEntity;
 import com.javaproject.topjava.util.exception.NotFoundException;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.lang.NonNull;
 
 public class ValidationUtil {
     public static void checkModification(int count, int id) {
         if (count == 0) {
-            throw new NotFoundException("Entity with id=" + id + " not found");
+            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
         }
     }
 
@@ -57,5 +60,12 @@ public class ValidationUtil {
     public static <T> T checkNotFound(T object, String msg) {
         checkNotFound(object != null, msg);
         return object;
+    }
+
+    //  https://stackoverflow.com/a/65442410/548473
+    @NonNull
+    public static Throwable getRootCause(@NonNull Throwable t) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        return rootCause != null ? rootCause : t;
     }
 }

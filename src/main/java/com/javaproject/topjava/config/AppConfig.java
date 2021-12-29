@@ -1,10 +1,13 @@
 package com.javaproject.topjava.config;
 
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.javaproject.topjava.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.Server;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +35,11 @@ public class AppConfig {
     @Bean
     Module module() {
         return new Hibernate5Module();
+    }
+
+    @Autowired
+    public void storeObjectMapper(ObjectMapper objectMapper) {
+        JsonUtil.setMapper(objectMapper);
     }
 
 }
