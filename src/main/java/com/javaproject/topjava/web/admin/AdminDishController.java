@@ -7,16 +7,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.javaproject.topjava.model.Dish;
 import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.repository.DishRepository;
 import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.util.validation.ValidationUtil;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +34,7 @@ import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 @CacheConfig(cacheNames = "dishes")
 public class AdminDishController {
 
-    static final String REST_URL = "api/admin/dishes";
+    static final String REST_URL = "/api/admin/dishes";
 
 
     private final DishRepository dishRepository;
@@ -44,13 +48,14 @@ public class AdminDishController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
         dishRepository.deleteExisted(id);
     }
 
-    @PostMapping(value = "restaurant/{id}")
+    @PostMapping(value = "all/restaurant/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
     public List<DishTo> create(@PathVariable int id, @Valid @RequestBody List<DishTo> menuTo) {
         log.info("create a menu {} for a restaurant with id={}", menuTo, id);
@@ -66,9 +71,28 @@ public class AdminDishController {
         } else throw new NotAllowedException("Today's menu has been already created.");
     }
 
+    @PostMapping(value = "restaurant/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(allEntries = true)
+    public ResponseEntity<DishTo> createWithLocation(@PathVariable int id, @Valid @RequestBody DishTo dishTo) {
+        log.info("create a dish {} for a restaurant with id={}", dishTo, id);
+        Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
+        List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), Sort.by("id"));
+        if (actualMenu.isEmpty()) {
+            checkNew(dishTo);
+            dishTo.setRestaurant(restaurant);
+            Dish newDish = dishRepository.save(mapper.toEntity(dishTo));
+            DishTo newDishTo = mapper.toDto(newDish);
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path(REST_URL + "/{id}")
+                    .buildAndExpand(newDishTo.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(newDishTo);
+        } else throw new NotAllowedException("Today's menu has been already created.");
+    }
+
 
 
     @PutMapping(value = "/{id}/restaurant/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void update(@PathVariable int id, @Valid @RequestBody DishTo dishTo, @PathVariable int restaurant_id) {
         log.info("update a dish {} with id={} for a restaurant with id={}", dishTo, id, restaurant_id);

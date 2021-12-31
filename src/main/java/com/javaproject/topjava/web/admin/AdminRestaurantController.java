@@ -36,7 +36,7 @@ public class AdminRestaurantController {
         this.mapper = mapper;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
     public ResponseEntity<RestaurantTo> createWithLocation(@Valid @RequestBody RestaurantTo restaurant) {
         log.info("create {}", restaurant);

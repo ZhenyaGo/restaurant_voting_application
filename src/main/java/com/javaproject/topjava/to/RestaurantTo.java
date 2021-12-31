@@ -12,7 +12,7 @@ public class RestaurantTo extends NamedTo {
     @NotBlank
     String address;
 
-
+    @ConstructorProperties({"id", "name", "address"})
     public RestaurantTo(Integer id, String name, String address) {
         super(id, name);
         this.address = address;
