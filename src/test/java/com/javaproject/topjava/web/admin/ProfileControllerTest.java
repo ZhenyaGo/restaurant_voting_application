@@ -3,7 +3,6 @@ package com.javaproject.topjava.web.admin;
 import com.javaproject.topjava.model.User;
 import com.javaproject.topjava.repository.UserRepository;
 import com.javaproject.topjava.to.UserTo;
-import com.javaproject.topjava.util.GlobalExceptionHandler;
 import com.javaproject.topjava.util.JsonUtil;
 import com.javaproject.topjava.util.UserUtil;
 import com.javaproject.topjava.web.AbstractControllerTest;
@@ -14,7 +13,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

@@ -38,23 +38,7 @@ public class DishController {
 
     static final String REST_URL = "/api/dishes";
 
-    //получение списка еды конкретного ресторана за определенную дату(сортировка по id)
-    //(если localDate=null отображается еда за сегодня)
-//    @GetMapping(value = "/restaurant/{id}")
-//    public List<DishTo> getAll(@PathVariable int id,
-//                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate localDate) {
-//        log.info("get the restaurant menu with id={}", id);
-//        return localDate == null
-//                ? dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), SORT_ID).stream()
-//                .map(mapper::toDto).collect(Collectors.toList())
-//                : dishRepository.getAllRestaurantDishesByDate(id, localDate, SORT_ID).stream()
-//                .map(mapper::toDto).collect(Collectors.toList());
-//
-//    }
 
-    //Разбил метод на два!
-
-    //получение списка еды конкретного ресторана за определенную дату
     @GetMapping(value = "/restaurant/{id}/by-date")
     public List<DishTo> getRestaurantDishesByDate(@PathVariable int id,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate Date) {

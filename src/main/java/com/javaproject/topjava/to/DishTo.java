@@ -3,6 +3,8 @@ package com.javaproject.topjava.to;
 import org.hibernate.validator.constraints.Range;
 import com.javaproject.topjava.model.Restaurant;
 
+import java.util.Objects;
+
 
 public class DishTo extends NamedTo {
 
@@ -11,12 +13,12 @@ public class DishTo extends NamedTo {
     Integer price;
 
 
-    Restaurant restaurant;
+    Integer restaurantId;
 
-    public DishTo(Integer id, String name, Integer price, Restaurant restaurant) {
+    public DishTo(Integer id, String name, Integer price, Integer restaurantId) {
         super(id, name);
         this.price = price;
-        this.restaurant = restaurant;
+        this.restaurantId = restaurantId;
     }
 
     public DishTo() {
@@ -31,12 +33,30 @@ public class DishTo extends NamedTo {
         this.price = price;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public Integer getRestaurantId() {
+        return restaurantId;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setRestaurantId(Integer restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DishTo dishTo = (DishTo) o;
+        return  Objects.equals(price, dishTo.price) &&
+                Objects.equals(restaurantId, dishTo.restaurantId) &&
+                Objects.equals(id, dishTo.id) &&
+                Objects.equals(name, dishTo.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price, restaurantId, id, name);
     }
 
     @Override
@@ -44,7 +64,7 @@ public class DishTo extends NamedTo {
         return "DishTo{" +
                 "id=" + id +
                 ", price=" + price +
-                ", restaurant=" + restaurant +
+                ", restaurantId=" + restaurantId +
                 ", name='" + name + '\'' +
                 '}';
     }

@@ -43,7 +43,7 @@ public class VotingController {
 
 
     @PostMapping(value = "/restaurants/{id}")
-    public void voteFor(@PathVariable int id) {
+    public void createVote(@PathVariable int id) {
         log.info("Vote for restaurant with id={}", id);
         User user = userRepository.getById(authId());
         Restaurant restaurant = checkNotFoundWithId(restRepository.getById(id),id);

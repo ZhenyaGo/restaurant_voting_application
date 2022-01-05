@@ -54,7 +54,7 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getRestaurantDishesForToday() throws Exception {
-        dishRepository.saveAll(getNewDishes());
+        List<Dish> dishes = dishRepository.saveAll(getNewDishes());
         List<DishTo> newDishesForToday = getNewDishesWithId().stream()
                 .map(d -> mapper.toDto(d))
                 .collect(Collectors.toList());
@@ -94,8 +94,5 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(mapper.toDto(DISH_1)));
     }
-
-
-
 
 }

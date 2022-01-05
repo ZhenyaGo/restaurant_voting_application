@@ -10,7 +10,7 @@ import static com.javaproject.topjava.web.RestaurantTestData.*;
 
 public class DishTestData {
 
-    public static final MatcherFactory.Matcher<DishTo> DISH_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(DishTo.class, "restaurant");
+    public static final MatcherFactory.Matcher<DishTo> DISH_MATCHER = MatcherFactory.usingEqualsComparator(DishTo.class);
 
 
     public static final Dish DISH_1 = new Dish(1, "Pasta Carbonara", 450, RESTAURANT_1 ,LocalDate.of(2021, 12, 1));

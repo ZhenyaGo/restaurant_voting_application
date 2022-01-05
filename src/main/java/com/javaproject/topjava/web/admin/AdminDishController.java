@@ -1,6 +1,7 @@
 package com.javaproject.topjava.web.admin;
 
 import com.javaproject.topjava.mapper.DishMapper;
+import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.to.DishTo;
 import com.javaproject.topjava.util.exception.NotAllowedException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.javaproject.topjava.model.Dish;
-import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.repository.DishRepository;
 import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.util.validation.ValidationUtil;
@@ -55,31 +55,31 @@ public class AdminDishController {
         dishRepository.deleteExisted(id);
     }
 
-    @PostMapping(value = "all/restaurant/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "all", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
-    public List<DishTo> create(@PathVariable int id, @Valid @RequestBody List<DishTo> menuTo) {
-        log.info("create a menu {} for a restaurant with id={}", menuTo, id);
-        Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
-        List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), Sort.by("id"));
+    public List<DishTo> create(@Valid @RequestBody List<DishTo> dishes) {
+        int restaurantId = dishes.get(1).getRestaurantId();
+        log.info("create a menu {} for a restaurant with id={}", dishes, restaurantId);
+        checkNotFoundWithId(restaurantRepository.findById(restaurantId).orElse(null), restaurantId);
+        List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(restaurantId, LocalDate.now(), Sort.by("id"));
         if (actualMenu.isEmpty()) {
-            menuTo.forEach(ValidationUtil::checkNew);
-            menuTo.forEach(m -> m.setRestaurant(restaurant));
-            List<Dish> menu = menuTo.stream()
+            dishes.forEach(ValidationUtil::checkNew);
+            List<Dish> menu = dishes.stream()
                     .map(mapper::toEntity).collect(Collectors.toList());
             return dishRepository.saveAll(menu).stream()
                     .map(mapper::toDto).collect(Collectors.toList());
         } else throw new NotAllowedException("Today's menu has been already created.");
     }
 
-    @PostMapping(value = "restaurant/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
-    public ResponseEntity<DishTo> createWithLocation(@PathVariable int id, @Valid @RequestBody DishTo dishTo) {
-        log.info("create a dish {} for a restaurant with id={}", dishTo, id);
-        Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
-        List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(id, LocalDate.now(), Sort.by("id"));
+    public ResponseEntity<DishTo> createWithLocation(@Valid @RequestBody DishTo dishTo) {
+        int restaurantId = dishTo.getRestaurantId();
+        log.info("create a dish {} for a restaurant with id={}", dishTo, restaurantId);
+        checkNotFoundWithId(restaurantRepository.findById(restaurantId).orElse(null), restaurantId);
+        List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(restaurantId, LocalDate.now(), Sort.by("id"));
         if (actualMenu.isEmpty()) {
             checkNew(dishTo);
-            dishTo.setRestaurant(restaurant);
             Dish newDish = dishRepository.save(mapper.toEntity(dishTo));
             DishTo newDishTo = mapper.toDto(newDish);
             URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -91,16 +91,17 @@ public class AdminDishController {
 
 
 
-    @PutMapping(value = "/{id}/restaurant/{restaurant_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
-    public void update(@PathVariable int id, @Valid @RequestBody DishTo dishTo, @PathVariable int restaurant_id) {
-        log.info("update a dish {} with id={} for a restaurant with id={}", dishTo, id, restaurant_id);
-        Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(restaurant_id).orElse(null), restaurant_id);
+    public void update(@PathVariable int id, @Valid @RequestBody DishTo dishTo) {
+        int restaurantId = dishTo.getRestaurantId();
+        log.info("update a dish {} with id={} for a restaurant with id={}", dishTo, id, restaurantId);
+        Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(restaurantId).orElse(null), restaurantId);
         Dish dish = checkNotFoundWithId(dishRepository.getById(id), id);
-        if(Objects.equals(dish.getRestaurant().getId(), restaurant != null ? restaurant.getId() : null)) {
-            assureIdConsistent(dishTo, id);
-            dishTo.setRestaurant(restaurant);
+        assureIdConsistent(dishTo, id);
+        assert restaurant != null;
+        if(Objects.equals(dish.getRestaurant().getId(), restaurant.getId())) {
             dishRepository.save(mapper.toEntity(dishTo));
         } else throw new NotAllowedException("The dish doesn't belong to this restaurant!");
     }

@@ -44,12 +44,12 @@ class AdminDishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void create() throws Exception {
-        List<DishTo> newRestaurantDishes = getNewDishes().stream()
+        List<DishTo> newDishes = getNewDishes().stream()
                 .map(d -> mapper.toDto(d))
                 .collect(Collectors.toList());
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "all/restaurant/" + RESTAURANT_1_ID)
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "all")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newRestaurantDishes)));
+                .content(JsonUtil.writeValue(newDishes)));
 
         List<DishTo> dishesWithId = getNewDishesWithId().stream()
                 .map(d -> mapper.toDto(d))
@@ -62,9 +62,10 @@ class AdminDishControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
         Dish newDish = getNewDish();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "restaurant/" + RESTAURANT_2_ID)
+        DishTo newDishTo = mapper.toDto(newDish);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(mapper.toDto(newDish))));
+                .content(JsonUtil.writeValue(newDishTo)));
         DishTo created = DISH_MATCHER.readFromJson(action);
         int newId = created.id();
         newDish.setId(newId);
@@ -76,7 +77,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
         Dish updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + DISH_3.id() + "/restaurant/" + RESTAURANT_1_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL + DISH_3.id())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(mapper.toDto(updated))))
                 .andDo(print())
