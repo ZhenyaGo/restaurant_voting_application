@@ -2,8 +2,6 @@ package com.javaproject.topjava.web.admin;
 
 import com.javaproject.topjava.mapper.RestaurantMapper;
 import com.javaproject.topjava.model.Restaurant;
-import com.javaproject.topjava.model.Role;
-import com.javaproject.topjava.model.User;
 import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.to.RestaurantTo;
 import com.javaproject.topjava.util.JsonUtil;
@@ -15,11 +13,11 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.javaproject.topjava.web.admin.UserTestData.*;
-import static com.javaproject.topjava.web.RestaurantTestData.getNew;
-import static com.javaproject.topjava.web.RestaurantTestData.NOT_FOUND;
-import static com.javaproject.topjava.web.RestaurantTestData.getUpdated;
-import static com.javaproject.topjava.web.RestaurantTestData.*;
+import static com.javaproject.topjava.web.data.UserTestData.*;
+import static com.javaproject.topjava.web.data.RestaurantTestData.getNew;
+import static com.javaproject.topjava.web.data.RestaurantTestData.NOT_FOUND;
+import static com.javaproject.topjava.web.data.RestaurantTestData.getUpdated;
+import static com.javaproject.topjava.web.data.RestaurantTestData.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

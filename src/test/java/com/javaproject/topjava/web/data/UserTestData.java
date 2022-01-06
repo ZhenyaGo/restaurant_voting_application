@@ -1,4 +1,4 @@
-package com.javaproject.topjava.web.admin;
+package com.javaproject.topjava.web.data;
 
 import com.javaproject.topjava.model.Role;
 import com.javaproject.topjava.model.User;

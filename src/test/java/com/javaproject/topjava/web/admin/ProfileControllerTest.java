@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static com.javaproject.topjava.web.admin.ProfileController.REST_URL;
-import static com.javaproject.topjava.web.admin.UserTestData.*;
+import static com.javaproject.topjava.web.data.UserTestData.*;
 
 class ProfileControllerTest extends AbstractControllerTest {
 

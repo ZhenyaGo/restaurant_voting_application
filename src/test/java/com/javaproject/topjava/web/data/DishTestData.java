@@ -1,12 +1,13 @@
-package com.javaproject.topjava.web;
+package com.javaproject.topjava.web.data;
 
 import com.javaproject.topjava.model.Dish;
 import com.javaproject.topjava.to.DishTo;
+import com.javaproject.topjava.web.MatcherFactory;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.javaproject.topjava.web.RestaurantTestData.*;
+import static com.javaproject.topjava.web.data.RestaurantTestData.*;
 
 public class DishTestData {
 

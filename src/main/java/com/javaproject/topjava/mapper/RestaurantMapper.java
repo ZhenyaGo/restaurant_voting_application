@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.to.RestaurantTo;
 
-@Component//без этой аннотации Spring не находит Bean
+@Component
 public class RestaurantMapper extends AbstractMapper<Restaurant, RestaurantTo> {
 
     @Autowired

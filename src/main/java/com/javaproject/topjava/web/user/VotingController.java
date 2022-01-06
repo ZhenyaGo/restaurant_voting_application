@@ -1,8 +1,10 @@
 package com.javaproject.topjava.web.user;
 
 import com.javaproject.topjava.to.VotingTo;
+import com.javaproject.topjava.web.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.model.User;
@@ -11,15 +13,15 @@ import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.repository.UserRepository;
 import com.javaproject.topjava.repository.VotingRepository;
 import com.javaproject.topjava.util.exception.NotAllowedException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
 
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 import static com.javaproject.topjava.util.Util.*;
 import static com.javaproject.topjava.util.VotingUtil.*;
 import static com.javaproject.topjava.web.SecurityUtil.authId;
-
-import java.time.LocalTime;
 import java.util.List;
 
 
@@ -43,31 +45,38 @@ public class VotingController {
 
 
     @PostMapping(value = "/restaurants/{id}")
-    public void createVote(@PathVariable int id) {
+    public ResponseEntity<VotingTo> createVote(@PathVariable int id) {
         log.info("Vote for restaurant with id={}", id);
         User user = userRepository.getById(authId());
         Restaurant restaurant = checkNotFoundWithId(restRepository.getById(id),id);
 
         LocalDate votingDate = LocalDate.now();
-        LocalTime votingTime = LocalTime.now();
-
-        Voting registeredVoting = votingRepository.getByUserIdAndVotingDate(id, votingDate);
+        Voting registeredVoting = votingRepository.getByUserIdAndVotingDate(authId(), votingDate);
 
         if(registeredVoting == null) {
-            Voting voting = new Voting(user, restaurant, votingDate, votingTime);
-            votingRepository.save(voting);
+            Voting voting = new Voting(user, restaurant);
+            VotingTo votingTo = createVotingTo(votingRepository.save(voting));
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path(REST_URL + "/{id}")
+                    .buildAndExpand(votingTo.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(votingTo);
         } else {
             if(isBefore(registeredVoting.getVotingTime(), LIMIT_TIME)) {
-                Voting newVote = new Voting(user, restaurant, votingDate, votingTime);
+                Voting newVote = new Voting(user, restaurant);
                 newVote.setId(registeredVoting.id());
-                votingRepository.save(newVote);
+                VotingTo newVoteTo = createVotingTo(votingRepository.save(newVote));
+
+                URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path(REST_URL + "/{id}")
+                        .buildAndExpand(newVoteTo.getId()).toUri();
+                return ResponseEntity.created(uriOfNewResource).body(newVoteTo);
             } else throw new NotAllowedException("You've already voted.Your vote can't be changed!");
         }
     }
 
 
     @GetMapping
-    public List<VotingTo> getAllVotes() {
+    public List<VotingTo> getAllUserVotes() {
         log.info("get all user's votes, user id={}", authId());
         List<Voting> voting = votingRepository.getAllByUserId(authId());
         return createVotingTos(voting);

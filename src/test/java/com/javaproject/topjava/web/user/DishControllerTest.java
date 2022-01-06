@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.javaproject.topjava.web.RestaurantTestData.*;
-import static com.javaproject.topjava.web.DishTestData.*;
-import static com.javaproject.topjava.web.admin.UserTestData.USER_MAIL;
+import static com.javaproject.topjava.web.data.RestaurantTestData.*;
+import static com.javaproject.topjava.web.data.DishTestData.*;
+import static com.javaproject.topjava.web.data.UserTestData.USER_MAIL;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

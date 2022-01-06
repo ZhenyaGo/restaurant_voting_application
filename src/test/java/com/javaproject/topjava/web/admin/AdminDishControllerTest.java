@@ -1,18 +1,13 @@
 package com.javaproject.topjava.web.admin;
 
-import com.javaproject.topjava.config.AppConfigTest;
 import com.javaproject.topjava.mapper.DishMapper;
 import com.javaproject.topjava.model.Dish;
-import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.repository.DishRepository;
-import com.javaproject.topjava.to.BaseTo;
 import com.javaproject.topjava.to.DishTo;
-import com.javaproject.topjava.to.RestaurantTo;
 import com.javaproject.topjava.util.JsonUtil;
 import com.javaproject.topjava.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
@@ -22,10 +17,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.javaproject.topjava.web.DishTestData.*;
-import static com.javaproject.topjava.web.DishTestData.getUpdated;
-import static com.javaproject.topjava.web.RestaurantTestData.*;
-import static com.javaproject.topjava.web.admin.UserTestData.ADMIN_MAIL;
+import static com.javaproject.topjava.web.data.DishTestData.*;
+import static com.javaproject.topjava.web.data.DishTestData.getUpdated;
+import static com.javaproject.topjava.web.data.RestaurantTestData.*;
+import static com.javaproject.topjava.web.data.UserTestData.ADMIN_MAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

@@ -1,7 +1,8 @@
-package com.javaproject.topjava.web;
+package com.javaproject.topjava.web.data;
 
 import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.to.RestaurantTo;
+import com.javaproject.topjava.web.MatcherFactory;
 
 
 public class RestaurantTestData {

@@ -1,6 +1,5 @@
 package com.javaproject.topjava.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -19,7 +18,6 @@ public class Dish extends NamedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-//    @JsonBackReference
     private Restaurant restaurant;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)

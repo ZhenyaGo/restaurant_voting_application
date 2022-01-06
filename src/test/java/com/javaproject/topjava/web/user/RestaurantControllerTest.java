@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.javaproject.topjava.web.RestaurantTestData.*;
+import static com.javaproject.topjava.web.data.RestaurantTestData.*;
 
-import static com.javaproject.topjava.web.RestaurantTestData.RESTAURANT_1;
-import static com.javaproject.topjava.web.admin.UserTestData.*;
+import static com.javaproject.topjava.web.data.RestaurantTestData.RESTAURANT_1;
+import static com.javaproject.topjava.web.data.UserTestData.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

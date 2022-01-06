@@ -1,6 +1,7 @@
 package com.javaproject.topjava.to;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class VotingTo extends BaseTo {
 
@@ -21,6 +22,7 @@ public class VotingTo extends BaseTo {
         this.restaurant_id = restaurant_id;
         this.votingDate = votingDate;
     }
+
 
     public Integer getUser_id() {
         return user_id;
@@ -44,6 +46,23 @@ public class VotingTo extends BaseTo {
 
     public void setVotingDate(LocalDate votingDate) {
         this.votingDate = votingDate;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VotingTo votingTo = (VotingTo) o;
+        return  Objects.equals(id, votingTo.id) &&
+                Objects.equals(user_id, votingTo.user_id) &&
+                Objects.equals(restaurant_id, votingTo.restaurant_id) &&
+                Objects.equals(votingDate, votingTo.votingDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id,user_id, restaurant_id, votingDate);
     }
 
     @Override
