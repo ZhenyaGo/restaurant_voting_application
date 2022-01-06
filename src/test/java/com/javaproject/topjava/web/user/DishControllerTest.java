@@ -1,7 +1,6 @@
 package com.javaproject.topjava.web.user;
 
 import com.javaproject.topjava.mapper.DishMapper;
-import com.javaproject.topjava.model.Dish;
 import com.javaproject.topjava.repository.DishRepository;
 import com.javaproject.topjava.to.DishTo;
 import com.javaproject.topjava.web.AbstractControllerTest;
@@ -44,7 +43,7 @@ class DishControllerTest extends AbstractControllerTest {
                 .collect(Collectors.toList());
 
         perform(MockMvcRequestBuilders.
-                 get(REST_URL + "restaurant/" + RESTAURANT_1_ID + "/by-date?Date=" + LocalDate.of(2021, 12, 1)))
+                 get(REST_URL + "restaurants/" + RESTAURANT_1_ID + "/by-date?Date=" + LocalDate.of(2021, 12, 1)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(dishes));
@@ -54,13 +53,13 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getRestaurantDishesForToday() throws Exception {
-        List<Dish> dishes = dishRepository.saveAll(getNewDishes());
+        dishRepository.saveAll(getNewDishes());
         List<DishTo> newDishesForToday = getNewDishesWithId().stream()
                 .map(d -> mapper.toDto(d))
                 .collect(Collectors.toList());
 
         perform(MockMvcRequestBuilders.
-                get(REST_URL + "restaurant/" + RESTAURANT_1_ID))
+                get(REST_URL + "restaurants/" + RESTAURANT_1_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(newDishesForToday));
@@ -76,7 +75,7 @@ class DishControllerTest extends AbstractControllerTest {
                 .collect(Collectors.toList());
 
         perform(MockMvcRequestBuilders.
-                get(REST_URL + "all/restaurant/" + RESTAURANT_1_ID))
+                get(REST_URL + "all/restaurants/" + RESTAURANT_1_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(dishes));

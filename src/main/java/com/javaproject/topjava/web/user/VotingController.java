@@ -1,8 +1,10 @@
 package com.javaproject.topjava.web.user;
 
 import com.javaproject.topjava.to.VotingTo;
-import com.javaproject.topjava.web.AuthUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ import com.javaproject.topjava.model.Voting;
 import com.javaproject.topjava.repository.RestaurantRepository;
 import com.javaproject.topjava.repository.UserRepository;
 import com.javaproject.topjava.repository.VotingRepository;
-import com.javaproject.topjava.util.exception.NotAllowedException;
+import com.javaproject.topjava.error.NotAllowedException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -28,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = VotingController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@CacheConfig(cacheNames = "voting")
 public class VotingController {
 
 
@@ -45,6 +48,7 @@ public class VotingController {
 
 
     @PostMapping(value = "/restaurants/{id}")
+    @CacheEvict(allEntries = true)
     public ResponseEntity<VotingTo> createVote(@PathVariable int id) {
         log.info("Vote for restaurant with id={}", id);
         User user = userRepository.getById(authId());
@@ -76,10 +80,10 @@ public class VotingController {
 
 
     @GetMapping
+    @Cacheable
     public List<VotingTo> getAllUserVotes() {
         log.info("get all user's votes, user id={}", authId());
         List<Voting> voting = votingRepository.getAllByUserId(authId());
         return createVotingTos(voting);
     }
-
 }

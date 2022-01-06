@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import com.javaproject.topjava.model.Dish;
 import com.javaproject.topjava.repository.DishRepository;
-import com.javaproject.topjava.util.exception.NotFoundException;
+import com.javaproject.topjava.error.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,7 +39,7 @@ public class DishController {
     static final String REST_URL = "/api/dishes";
 
 
-    @GetMapping(value = "/restaurant/{id}/by-date")
+    @GetMapping(value = "/restaurants/{id}/by-date")
     public List<DishTo> getRestaurantDishesByDate(@PathVariable int id,
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(required = false) LocalDate Date) {
         log.info("get restaurant's dishes with id={} on a certain date.", id);
@@ -50,7 +50,7 @@ public class DishController {
 
 
     //получение списка еды конкретного ресторана за сегодня
-    @GetMapping(value = "/restaurant/{id}")
+    @GetMapping(value = "/restaurants/{id}")
     @Cacheable
     public List<DishTo> getRestaurantDishesForToday(@PathVariable int id) {
         log.info("get restaurant's dishes with id={} for today.", id);
@@ -60,7 +60,7 @@ public class DishController {
 
 
     //получение списка еды конкретного ресторана за все время
-    @GetMapping(value = "/all/restaurant/{id}")
+    @GetMapping(value = "/all/restaurants/{id}")
     public List<DishTo> getAllRestaurantDishes(@PathVariable int id) {
         log.info("get restaurant's dishes with id={} for all time.", id);
         return dishRepository.getAllRestaurantDishes(id).stream()

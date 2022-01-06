@@ -3,7 +3,8 @@ package com.javaproject.topjava.web.admin;
 import com.javaproject.topjava.mapper.DishMapper;
 import com.javaproject.topjava.model.Restaurant;
 import com.javaproject.topjava.to.DishTo;
-import com.javaproject.topjava.util.exception.NotAllowedException;
+import com.javaproject.topjava.error.NotAllowedException;
+import com.javaproject.topjava.error.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -68,7 +69,7 @@ public class AdminDishController {
                     .map(mapper::toEntity).collect(Collectors.toList());
             return dishRepository.saveAll(menu).stream()
                     .map(mapper::toDto).collect(Collectors.toList());
-        } else throw new NotAllowedException("Today's menu has been already created.");
+        } else throw new NotAllowedException("Today's menu has already been created.");
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -103,6 +104,6 @@ public class AdminDishController {
         assert restaurant != null;
         if(Objects.equals(dish.getRestaurant().getId(), restaurant.getId())) {
             dishRepository.save(mapper.toEntity(dishTo));
-        } else throw new NotAllowedException("The dish doesn't belong to this restaurant!");
+        } else throw new NotFoundException("The dish doesn't belong to this restaurant!");
     }
 }
