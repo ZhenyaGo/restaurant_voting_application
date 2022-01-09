@@ -59,7 +59,7 @@ public class AdminDishController {
     @PostMapping(value = "all", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
     public List<DishTo> create(@Valid @RequestBody List<DishTo> dishes) {
-        int restaurantId = dishes.get(1).getRestaurantId();
+        int restaurantId = dishes.get(0).getRestaurantId();
         log.info("create a menu {} for a restaurant with id={}", dishes, restaurantId);
         checkNotFoundWithId(restaurantRepository.findById(restaurantId).orElse(null), restaurantId);
         List<Dish> actualMenu = dishRepository.getAllRestaurantDishesByDate(restaurantId, LocalDate.now(), Sort.by("id"));
