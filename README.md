@@ -2,7 +2,7 @@ Restaurant voting application
 ===============================
 ---
 
-###The task is:
+### The task is:
 
 **Build a voting system for deciding where to have lunch.**
 
@@ -32,7 +32,7 @@ Restaurant voting application
 
 ---
 
-- ####Stack: 
+- #### Stack: 
   - [JDK 17](http://jdk.java.net/17/)
   - Spring Boot 2.6
   - Lombok
@@ -41,7 +41,7 @@ Restaurant voting application
   - Swagger/OpenAPI 3.0
   - ModalMapper
 
-- ####Run: `mvn spring-boot:run` in root directory.
+- #### Run: `mvn spring-boot:run` in root directory.
 ---
 
 [REST API documentation](http://localhost:8080/swagger-ui.html)  
