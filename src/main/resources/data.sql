@@ -26,7 +26,14 @@ VALUES (1, 'Pasta Carbonara', 450, '2021-12-01'),
        (3, 'Pizza', 600, '2021-12-01'),
        (4, 'Risotto', 450, '2021-12-01'),
        (4, 'Steak ', 1000, '2021-12-01'),
-       (4, 'Lasagna', 450, '2021-12-01');
+       (4, 'Lasagna', 450, '2021-12-01'),
+       (1, 'Vegetable soup', 325, current_date),
+       (1, 'Greek salad', 400, current_date),
+       (1, 'Wine', 350, current_date),
+       (3, 'Onion rings', 344, current_date),
+       (3, 'Garlic bread', 250, current_date),
+       (3, 'Milkshake', 285, current_date);
+
 
 
 INSERT INTO voting (user_id, restaurant_id, voting_date, voting_time)

@@ -53,8 +53,7 @@ class DishControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getRestaurantDishesForToday() throws Exception {
-        dishRepository.saveAll(getNewDishes());
-        List<DishTo> newDishesForToday = getNewDishesWithId().stream()
+        List<DishTo> newDishesForToday = newDishes().stream()
                 .map(d -> mapper.toDto(d))
                 .collect(Collectors.toList());
 
@@ -70,7 +69,7 @@ class DishControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void getAllRestaurantDishes() throws Exception {
 
-        List<DishTo> dishes = Stream.of(DISH_1, DISH_2, DISH_3)
+        List<DishTo> dishes = Stream.of(DISH_1, DISH_2, DISH_3, DISH_13, DISH_14, DISH_15)
                 .map(d -> mapper.toDto(d))
                 .collect(Collectors.toList());
 
