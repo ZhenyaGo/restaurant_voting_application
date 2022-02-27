@@ -40,7 +40,7 @@ spring:
 logging:
     level:
       root: WARN
-      com.javaproject.topjava: DEBUG
+      com.github.zhenyago.votingsystem: DEBUG
       org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
 server.servlet:
