@@ -26,7 +26,6 @@ class AdminUserControllerTest extends AbstractControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void get() throws Exception {
@@ -157,5 +156,4 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
-
 }

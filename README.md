@@ -39,7 +39,7 @@ Restaurant voting application
   - H2
   - Caffeine Cache
   - Swagger/OpenAPI 3.0
-  - ModalMapper
+  - ModelMapper
 
 - #### Run: `mvn spring-boot:run` in root directory.
 ---

@@ -33,7 +33,6 @@ class DishControllerTest extends AbstractControllerTest {
     @Autowired
     DishMapper mapper;
 
-
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getRestaurantDishesByDate() throws Exception {
@@ -43,12 +42,11 @@ class DishControllerTest extends AbstractControllerTest {
                 .collect(Collectors.toList());
 
         perform(MockMvcRequestBuilders.
-                 get(REST_URL + "restaurants/" + RESTAURANT_1_ID + "/by-date?Date=" + LocalDate.of(2021, 12, 1)))
+                 get(REST_URL + "restaurants/" + RESTAURANT_1_ID + "/by-date?date=" + LocalDate.of(2021, 12, 1)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(dishes));
     }
-
 
     @Test
     @WithUserDetails(value = USER_MAIL)
@@ -64,7 +62,6 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(DISH_MATCHER.contentJson(newDishesForToday));
     }
 
-
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getAllRestaurantDishes() throws Exception {
@@ -74,14 +71,11 @@ class DishControllerTest extends AbstractControllerTest {
                 .collect(Collectors.toList());
 
         perform(MockMvcRequestBuilders.
-                get(REST_URL + "all/restaurants/" + RESTAURANT_1_ID))
+                get(REST_URL + "/restaurants/" + RESTAURANT_1_ID + "/all"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(dishes));
     }
-
-
-
 
     @Test
     @WithUserDetails(value = USER_MAIL)
@@ -92,5 +86,4 @@ class DishControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(mapper.toDto(DISH_1)));
     }
-
 }

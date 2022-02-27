@@ -1,5 +1,10 @@
 package com.javaproject.topjava.model;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
@@ -7,6 +12,9 @@ import javax.validation.constraints.Size;
 
 
 @MappedSuperclass
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class NamedEntity extends BaseEntity {
 
     @NotBlank
@@ -14,19 +22,8 @@ public abstract class NamedEntity extends BaseEntity {
     @Column(name = "name", nullable = false)
     protected String name;
 
-    protected NamedEntity() {
-    }
-
     public NamedEntity(Integer id, String name) {
         super(id);
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 
@@ -34,6 +31,4 @@ public abstract class NamedEntity extends BaseEntity {
     public String toString() {
         return super.toString() + '[' + name + ']';
     }
-
-
 }

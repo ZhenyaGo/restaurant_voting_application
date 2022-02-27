@@ -27,7 +27,6 @@ public class ValidationUtil {
         }
     }
 
-
     public static <T> T checkNotFoundWithId(T object, int id) {
         checkNotFoundWithId(object != null, id);
         return object;
@@ -47,7 +46,6 @@ public class ValidationUtil {
         checkNotFound(object != null, msg);
         return object;
     }
-
 
     @NonNull
     public static Throwable getRootCause(@NonNull Throwable t) {

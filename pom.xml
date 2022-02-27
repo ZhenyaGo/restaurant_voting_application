@@ -8,7 +8,7 @@
         <version>2.6.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>com.github.ZhenyaGo</groupId>
     <artifactId>restaurant_voting_application</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>restaurant_voting_application</name>

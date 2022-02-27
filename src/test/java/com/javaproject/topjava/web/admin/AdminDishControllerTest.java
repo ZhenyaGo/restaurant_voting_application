@@ -13,15 +13,10 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.javaproject.topjava.web.data.DishTestData.*;
 import static com.javaproject.topjava.web.data.DishTestData.getUpdated;
 import static com.javaproject.topjava.web.data.RestaurantTestData.*;
 import static com.javaproject.topjava.web.data.UserTestData.ADMIN_MAIL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,23 +30,6 @@ class AdminDishControllerTest extends AbstractControllerTest {
 
     @Autowired
     DishMapper mapper;
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void create() throws Exception {
-        List<DishTo> newDishes = getNewDishes().stream()
-                .map(d -> mapper.toDto(d))
-                .collect(Collectors.toList());
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "all")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newDishes)));
-
-        List<DishTo> dishesWithId = getNewDishesWithId().stream()
-                .map(d -> mapper.toDto(d))
-                .collect(Collectors.toList());
-
-        assertEquals(JsonUtil.writeValue(dishesWithId), action.andReturn().getResponse().getContentAsString());
-    }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
@@ -97,5 +75,4 @@ class AdminDishControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
-
 }

@@ -1,17 +1,15 @@
 package com.javaproject.topjava.util;
 
-import org.springframework.lang.Nullable;
+import lombok.experimental.UtilityClass;
 
 import java.time.LocalTime;
 
+@UtilityClass
 public class Util {
 
-    public static final LocalTime LIMIT_TIME = LocalTime.of(11,0, 0);
+    public static final LocalTime LIMIT_TIME = LocalTime.of(13,0, 0);
 
-    private Util() {
-    }
-
-    public static <T extends Comparable<T>> boolean isBefore(T value, @Nullable T time) {
-        return (time == null || value.compareTo(time) <= 0);
+    public static boolean isBeforeDeadline(LocalTime lt) {
+        return  lt.compareTo(LIMIT_TIME) <= 0;
     }
 }

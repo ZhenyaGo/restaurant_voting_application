@@ -1,9 +1,15 @@
 package com.javaproject.topjava.to;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class NamedTo extends BaseTo {
 
     @NotBlank
@@ -12,18 +18,6 @@ public class NamedTo extends BaseTo {
 
     public NamedTo(Integer id, String name) {
         super(id);
-        this.name = name;
-    }
-
-    public NamedTo() {
-
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 

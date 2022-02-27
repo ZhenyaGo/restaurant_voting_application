@@ -1,8 +1,9 @@
-package com.javaproject.topjava.web.admin;
+package com.javaproject.topjava.web.user;
 
 import com.javaproject.topjava.model.User;
 import com.javaproject.topjava.to.UserTo;
 import com.javaproject.topjava.util.UserUtil;
+import com.javaproject.topjava.web.admin.AbstractUserController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,7 +46,6 @@ public class ProfileController extends AbstractUserController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
@@ -54,5 +54,4 @@ public class ProfileController extends AbstractUserController {
         User user = authUser();
         prepareAndSave(UserUtil.updateFromTo(user, userTo));
     }
-
 }

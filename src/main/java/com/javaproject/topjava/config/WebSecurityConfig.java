@@ -1,6 +1,5 @@
 package com.javaproject.topjava.config;
 
-
 import com.javaproject.topjava.model.Role;
 import com.javaproject.topjava.model.User;
 import com.javaproject.topjava.repository.UserRepository;
@@ -31,13 +30,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
 
-
     @Bean
     @Override
     public UserDetailsService userDetailsServiceBean() throws Exception {
         return super.userDetailsServiceBean();
     }
-
 
     public UserDetailsService userDetailsService() {
         return email -> {
@@ -64,5 +61,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
     }
-
 }

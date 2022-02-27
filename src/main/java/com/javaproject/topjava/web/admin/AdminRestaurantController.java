@@ -19,7 +19,6 @@ import java.net.URI;
 
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 
-
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -43,25 +42,20 @@ public class AdminRestaurantController {
         checkNew(restaurant);
         Restaurant newRestaurant = repository.save(mapper.toEntity(restaurant));
         RestaurantTo newRestaurantTo = mapper.toDto(newRestaurant);
-
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(newRestaurantTo.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(newRestaurantTo);
     }
 
-
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void update(@Valid @RequestBody RestaurantTo restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
-        //проверяем существует ли ресторан, который мы хотим обновить
-        checkNotFoundWithId(repository.findById(id).orElse(null), id);
         assureIdConsistent(restaurant, id);
         repository.save(mapper.toEntity(restaurant));
     }
-
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -70,5 +64,4 @@ public class AdminRestaurantController {
         log.info("delete {}", id);
         repository.deleteExisted(id);
     }
-
 }

@@ -31,7 +31,6 @@ public class AdminUserController extends AbstractUserController {
 
     static final String REST_URL = "/api/admin/users";
 
-
     @Override
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> get(@PathVariable int id) {
@@ -66,14 +65,12 @@ public class AdminUserController extends AbstractUserController {
         prepareAndSave(user);
     }
 
-
     @GetMapping("/by-email")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
         log.info("getByEmail {}", email);
         return ResponseEntity.of(
                 checkNotFound(repository.getByEmail(email), "email=" + email));
     }
-
 
     @GetMapping
     @Cacheable
@@ -91,5 +88,4 @@ public class AdminUserController extends AbstractUserController {
         User user = repository.getById(id);
         user.setEnabled(enabled);
     }
-
 }

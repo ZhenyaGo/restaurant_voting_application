@@ -1,6 +1,5 @@
 package com.javaproject.topjava.error;
 
-import com.javaproject.topjava.error.AppException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.http.HttpStatus;
 

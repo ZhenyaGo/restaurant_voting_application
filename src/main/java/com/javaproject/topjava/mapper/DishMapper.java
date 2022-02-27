@@ -20,7 +20,6 @@ public class DishMapper extends AbstractMapper<Dish, DishTo> {
         this.repository = repository;
     }
 
-
     @PostConstruct
     public void setupMapper() {
         mapper.createTypeMap(Dish.class, DishTo.class)

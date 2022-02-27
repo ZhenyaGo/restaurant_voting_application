@@ -2,6 +2,8 @@ package com.javaproject.topjava.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.javaproject.topjava.HasId;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
@@ -11,27 +13,16 @@ import javax.persistence.*;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity implements Persistable<Integer> , HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     protected Integer id;
-
-
-    protected BaseEntity() {
-    }
-
-    protected BaseEntity(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public int id() {
         Assert.notNull(id, "Entity must have id");

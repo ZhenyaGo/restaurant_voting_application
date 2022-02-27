@@ -14,7 +14,6 @@ public class AbstractUserController {
     @Autowired
     protected UserRepository repository;
 
-
     public ResponseEntity<User> get(int id) {
         log.info("get {}", id);
         return ResponseEntity.of(repository.findById(id));

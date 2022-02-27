@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.javaproject.topjava.util.validation.ValidationUtil.checkModification;
 
-
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Integer> {
 
@@ -20,5 +19,4 @@ public interface BaseRepository<T> extends JpaRepository<T, Integer> {
     default void deleteExisted(int id) {
         checkModification(delete(id), id);
     }
-
 }

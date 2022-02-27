@@ -41,5 +41,4 @@ public class AppConfig {
     public void storeObjectMapper(ObjectMapper objectMapper) {
         JsonUtil.setMapper(objectMapper);
     }
-
 }

@@ -1,89 +1,95 @@
 package com.javaproject.topjava.web.user;
 
+import com.javaproject.topjava.error.NotFoundException;
+import com.javaproject.topjava.mapper.VotingMapper;
 import com.javaproject.topjava.to.VotingTo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.javaproject.topjava.model.Restaurant;
-import com.javaproject.topjava.model.User;
 import com.javaproject.topjava.model.Voting;
 import com.javaproject.topjava.repository.RestaurantRepository;
-import com.javaproject.topjava.repository.UserRepository;
 import com.javaproject.topjava.repository.VotingRepository;
 import com.javaproject.topjava.error.NotAllowedException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
-
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 import static com.javaproject.topjava.util.Util.*;
-import static com.javaproject.topjava.util.VotingUtil.*;
 import static com.javaproject.topjava.web.SecurityUtil.authId;
+import static com.javaproject.topjava.web.SecurityUtil.authUser;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-
+@Transactional
 @RestController
 @RequestMapping(value = VotingController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@CacheConfig(cacheNames = "voting")
+@CacheConfig(cacheNames = "votes")
 public class VotingController {
 
-
     private final RestaurantRepository restRepository;
-    private final UserRepository userRepository;
     private final VotingRepository votingRepository;
+    private final VotingMapper mapper;
 
-    static final String REST_URL = "/api/voting";
+    static final String REST_URL = "/api/votes";
 
-    public VotingController(RestaurantRepository restRepository, UserRepository userRepository, VotingRepository votingRepository) {
+    public VotingController(RestaurantRepository restRepository,VotingRepository votingRepository, VotingMapper mapper) {
         this.restRepository = restRepository;
-        this.userRepository = userRepository;
         this.votingRepository = votingRepository;
+        this.mapper = mapper;
     }
 
-
-    @PostMapping(value = "/restaurants/{id}")
-    @CacheEvict(allEntries = true)
-    public ResponseEntity<VotingTo> createVote(@PathVariable int id) {
-        log.info("Vote for restaurant with id={}", id);
-        User user = userRepository.getById(authId());
-        Restaurant restaurant = checkNotFoundWithId(restRepository.getById(id),id);
-
-        LocalDate votingDate = LocalDate.now();
-        Voting registeredVoting = votingRepository.getByUserIdAndVotingDate(authId(), votingDate);
-
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<VotingTo> createWithLocation(@Valid @RequestBody VotingTo voting) {
+        checkNew(voting);
+        int restaurant_id = voting.getRestaurant_id();
+        log.info("Vote for restaurant with id={}", restaurant_id);
+        Restaurant restaurant = restRepository.findById(restaurant_id)
+                        .orElseThrow(() -> new NotFoundException("Restaurant with id=" + restaurant_id + " not found"));
+        Voting registeredVoting = votingRepository.getByUserIdAndVotingDate(authId(), LocalDate.now());
         if(registeredVoting == null) {
-            Voting voting = new Voting(user, restaurant);
-            VotingTo votingTo = createVotingTo(votingRepository.save(voting));
+            Voting newVote = new Voting(authUser(), restaurant);
+            VotingTo votingTo = mapper.toDto(votingRepository.save(newVote));
             URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path(REST_URL + "/{id}")
                     .buildAndExpand(votingTo.getId()).toUri();
             return ResponseEntity.created(uriOfNewResource).body(votingTo);
-        } else {
-            if(isBefore(registeredVoting.getVotingTime(), LIMIT_TIME)) {
-                Voting newVote = new Voting(user, restaurant);
-                newVote.setId(registeredVoting.id());
-                VotingTo newVoteTo = createVotingTo(votingRepository.save(newVote));
-
-                URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path(REST_URL + "/{id}")
-                        .buildAndExpand(newVoteTo.getId()).toUri();
-                return ResponseEntity.created(uriOfNewResource).body(newVoteTo);
-            } else throw new NotAllowedException("You've already voted.Your vote can't be changed!");
-        }
+        } else throw new NotAllowedException("You've already voted!");
     }
 
+    @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void update(@PathVariable int id, @Valid @RequestBody VotingTo voting) {
+        log.info("update {} with id={}", voting, id);
+        assureIdConsistent(voting, id);
+        Voting userVote = votingRepository.getByUserIdAndVotingDate(authId(), LocalDate.now());
+        if(userVote != null) {
+            if (isBeforeDeadline(LocalTime.now())) {
+                int restaurant_id = voting.getRestaurant_id();
+                Restaurant restaurant = restRepository.findById(restaurant_id)
+                        .orElseThrow(() -> new NotFoundException("Restaurant with id=" + restaurant_id + " not found"));
+                userVote.setRestaurant(restaurant);
+                votingRepository.save(userVote);
+            } else throw new NotAllowedException("You can't change your vote!");
+        } else throw new NotAllowedException("You haven't voted yet today");
+    }
 
     @GetMapping
-    @Cacheable
     public List<VotingTo> getAllUserVotes() {
         log.info("get all user's votes, user id={}", authId());
         List<Voting> voting = votingRepository.getAllByUserId(authId());
-        return createVotingTos(voting);
+        return voting.stream()
+                .map(mapper::toDto).collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/{id}")
+    public VotingTo get(@PathVariable int id) {
+        log.info("get a vote {}, user id={}", id, authId());
+        return mapper.toDto(votingRepository.getByIdAndUserId(id, authId()));
     }
 }

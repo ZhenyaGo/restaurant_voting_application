@@ -33,7 +33,6 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Autowired
     RestaurantMapper mapper;
 
-
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
@@ -70,7 +69,6 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
         assertFalse(repository.findById(USER_ID).isPresent());
     }
 
-
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void deleteNotFound() throws Exception {
@@ -101,6 +99,4 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
-
-
 }

@@ -35,11 +35,9 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Autowired
     RestaurantMapper mapper;
 
-
-
     @Test
     @WithUserDetails(value = USER_MAIL)
-    void getByEmail() throws Exception {
+    void getByName() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "by-name?name=" + RESTAURANT_1.getName()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -56,7 +54,6 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(RESTAURANT_MATCHER.contentJson(mapper.toDto(RESTAURANT_1)));
     }
 
-
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getAll() throws Exception {
@@ -70,4 +67,13 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(RESTAURANT_MATCHER.contentJson(restaurants));
     }
 
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void getWithMenu() throws Exception {
+        List<Restaurant> restaurants = getRestaurantWithMenuForToday();
+        perform(MockMvcRequestBuilders.get(REST_URL + "with-menu"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RES_MATCHER.contentJson(restaurants));
+    }
 }

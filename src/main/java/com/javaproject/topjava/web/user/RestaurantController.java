@@ -10,11 +10,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static com.javaproject.topjava.util.validation.ValidationUtil.*;
 
 @RestController
@@ -33,16 +31,13 @@ public class RestaurantController {
         this.mapper = mapper;
     }
 
-
     @GetMapping
-    @Cacheable
     public List<RestaurantTo> getAll() {
         log.info("getAll");
         return repository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
-
 
     @GetMapping(value = "/{id}")
     public RestaurantTo get(@PathVariable int id) {
@@ -58,4 +53,10 @@ public class RestaurantController {
         return mapper.toDto(restaurant);
     }
 
+    @GetMapping(value = "/with-menu")
+    @Cacheable
+    public List<Restaurant> getWithMenu() {
+        log.info("get restaurants with menu for today");
+        return repository.getRestaurantsWithMenuForToday(LocalDate.now());
+    }
 }

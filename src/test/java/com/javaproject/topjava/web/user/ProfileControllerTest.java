@@ -1,4 +1,4 @@
-package com.javaproject.topjava.web.admin;
+package com.javaproject.topjava.web.user;
 
 import com.javaproject.topjava.model.User;
 import com.javaproject.topjava.repository.UserRepository;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static com.javaproject.topjava.web.admin.ProfileController.REST_URL;
+import static com.javaproject.topjava.web.user.ProfileController.REST_URL;
 import static com.javaproject.topjava.web.data.UserTestData.*;
 
 class ProfileControllerTest extends AbstractControllerTest {
@@ -97,5 +97,4 @@ class ProfileControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
-
 }
